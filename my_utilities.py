@@ -4,7 +4,7 @@ import cv2
 import pickle
 import numpy as np
 import os, glob, shutil
-from sklearn.metrics.pairwise import pairwise_distances
+#from sklearn.metrics.pairwise import pairwise_distances
 
 # Utility function: Dictionary
 def update_dictionary(sigs_items_DB, item_key, item_value):
@@ -50,9 +50,9 @@ def get_dictionary_items_by_range(my_dictionary, start_index, end_index):
     return dict_items
             
 # Utility function: Distance based
-def get_pair_distance(t_features, dist_type='cosine'):
-    pdistArr = pairwise_distances(t_features , metric=dist_type)  # for LP
-    return pdistArr[np.triu_indices(len(t_features), k=1)]
+#def get_pair_distance(t_features, dist_type='cosine'):
+#    pdistArr = pairwise_distances(t_features , metric=dist_type)  # for LP
+#    return pdistArr[np.triu_indices(len(t_features), k=1)]
 
 # Utility function: save as pickel based
 def save_data_with_pickel(file_name, info_list):

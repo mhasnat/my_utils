@@ -6,7 +6,12 @@ def get_my_detector(det_type='yv3'):
     from utils_machine import get_cuda_version
     cuda_version = get_cuda_version()
     
-    if cuda_version=='10.1':
+    if cuda_version=='11.2':
+        if det_type=='yv3':
+            import Object_Detector_5 as od
+        else:
+            import Object_Detector_3 as od
+    elif cuda_version=='10.1':
         if det_type=='yv3':
             import Object_Detector_2 as od
         else:

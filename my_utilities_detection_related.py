@@ -150,14 +150,14 @@ def get_annotations_from_detections_multi_objects(tImg_anno, r, color_dict=None,
     
     return tImg_anno
 
-def get_annotations_from_detections(tImg_anno, r, show_label=True):
+def get_annotations_from_detections(tImg_anno, r, show_label=True, thickness=5):
     for b in r:
         t_id, t_conf, t_box = parse_detection_info(b)
         #print(t_conf)
         (tx1, ty1, tx2, ty2) = (t_box[0], t_box[1], t_box[2], t_box[3])
 
         if t_conf > 0.05:
-            tImg_anno = cv2.rectangle(tImg_anno, (tx1, ty1), (tx2, ty2), (255, 0, 255), 5)        
+            tImg_anno = cv2.rectangle(tImg_anno, (tx1, ty1), (tx2, ty2), (255, 0, 255), thickness)        
             if show_label:
                 cv2.putText(tImg_anno, str(t_id), (int(tx1), int(ty1-10)), 
                                     cv2.FONT_HERSHEY_DUPLEX, 0.6,(0,0,255), 2)

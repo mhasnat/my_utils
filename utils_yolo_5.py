@@ -62,7 +62,9 @@ def import_darknet(version="alexeyab"):
         elif version == "alexeyab":
             print("Importing library darknet for YOLO AlexeyAB")
             #sys.path.insert(0, "/cyclope/Hasnat/yv4setup/darknet/")
-            sys.path.insert(0, "/raid-dgx1/Hasnat/darknet/")
+            #sys.path.insert(0, "/raid-dgx1/Hasnat/darknet/")
+            sys.path.insert(0, "/raid-dgx2/Hasnat/darknetM/")
+            
             global dnab
             #import utils.darknet as dnab
             import darknet as dnab

@@ -103,6 +103,34 @@ def box_iou_ratio(a, b):
 
     return float(s_intersection) / (s_a + s_b - s_intersection)
 
+def get_iou_refined_boxes(t_box_all, iou_th=0.5):
+    # Compute IoU among all boxes
+    t_score = np.zeros((len(t_box_all), len(t_box_all)), dtype=np.float)
+    for ti in range(len(t_box_all)):
+        for tj in range(ti+1, len(t_box_all)):
+            t_iou = box_iou_ratio(t_box_all[ti][2], t_box_all[tj][2])
+            if t_iou>iou_th:
+                t_score[ti, tj] = t_iou
+                t_score[tj, ti] = t_iou                    
+    t_score_sum = np.sum(t_score, axis=1)
+
+    # Find valid 
+    res_final = []
+    valid_status = np.ones((len(t_score_sum)), dtype=bool)
+    for jj in range(len(t_score_sum)):
+        if t_score_sum[jj]>0:
+            ol_indx = np.where(t_score[jj, :]>0)[0]
+
+            for t_i in ol_indx:
+                # check confidense and select accordingly
+                if t_box_all[jj][1]>t_box_all[t_i][1]:
+                    valid_status[t_i] = False
+                    res_final.append(t_box_all[jj])
+        else:
+            res_final.append(t_box_all[jj])
+
+    return res_final
+
 def get_merged_prediction_truth(prediction_df,ground_truth_df):
     merged_df = prediction_df.merge(ground_truth_df, how="outer", on='filename',suffixes=('_pred', '_ground'))
     merged_df["iou"] = merged_df.apply(lambda row: box_iou_ratio(

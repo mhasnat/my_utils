@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 # Reads the yolo formatted bboxes and makes them as YOLO inferance output
-def get_bboxes_from_file_as_yolo_pred(img_size, labels_path, padding=0, verbose=False):
+def get_bboxes_from_file_as_yolo_pred(img_size, labels_path, padding=0, verbose=False, class_names=None):
     (height, width, _) = img_size
     
     bboxes = []
@@ -18,7 +18,12 @@ def get_bboxes_from_file_as_yolo_pred(img_size, labels_path, padding=0, verbose=
             bb_width = round(parsed[3] * width)
             bb_height = round(parsed[4] * height)
             
-            bboxes.append((int(parsed[0]), 0.99, (round(bb_center_x - bb_width/2  + padding),
+            if class_names is None:
+                class_label=int(parsed[0])
+            else:
+                class_label=class_names[int(parsed[0])]
+                
+            bboxes.append((class_label, 0.99, (round(bb_center_x - bb_width/2  + padding),
                                            round(bb_center_y - bb_height/2  + padding),
                                            round(bb_center_x + bb_width/2  + padding),
                                            round(bb_center_y + bb_height/2  + padding))))

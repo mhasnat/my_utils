@@ -108,7 +108,27 @@ def show_montage(all_file_names, all_lp_texts, show_title=True,
     if not showFig:
         plt.close()
     #plt.show()
-    
+
+## Image Segmentation
+def get_seg_overlayed_image(img, seg, show_img=False):
+    class_colors = [(0,0,0), (12,76,225), (235,50,50),(13,50,235),(13,255,50) ]
+
+    if seg.ndim==2:
+        newSeg = np.dstack((seg,seg,seg))
+    else:
+        newSeg = seg
+        
+    for c in range(3):
+        newSeg[:,:,0] = np.where(newSeg[:,:,0] == c, class_colors[c][0], newSeg[:,:,0])
+        newSeg[:,:,1] = np.where(newSeg[:,:,1] == c, class_colors[c][1], newSeg[:,:,1])
+        newSeg[:,:,2] = np.where(newSeg[:,:,2] == c, class_colors[c][2], newSeg[:,:,2])
+
+    dst = cv2.addWeighted(deepcopy(img), 0.7, newSeg, 0.5, 0, dtype=cv2.CV_32F)
+    if show_img:
+        show_image(np.asarray(dst, dtype=np.uint8))
+        
+    return dst
+
 ## Classifier Results Display
 from sklearn.metrics import confusion_matrix
 import itertools

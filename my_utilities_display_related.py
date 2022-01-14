@@ -2,6 +2,7 @@
 # coding: utf-8
 import cv2
 import numpy as np
+from copy import deepcopy
 import os, glob, shutil
 import matplotlib.pyplot as plt
 from imutils import build_montages
@@ -47,12 +48,12 @@ def show_image(tImg, cmap=None, figsize=None, title=''):
     plt.title(title)
     plt.show()
     
-def show_image_from_file(t_file):
+def show_image_from_file(t_file, cmap=None, figsize=None, title=''):
     tImg = cv2.imread(t_file)[:,:,::-1]
+    show_image(tImg, cmap=cmap, figsize=figsize, title=title)
+    '''
     plt.imshow(tImg)
-    plt.xticks([])
-    plt.yticks([])
-    plt.show()    
+    '''
 
 def show_montage_from_image_list(images, all_lp_texts, show_title=True, 
                  saveFig=None, showFig=True, im_shape=(280, 120), dpi=200):
@@ -110,8 +111,8 @@ def show_montage(all_file_names, all_lp_texts, show_title=True,
     #plt.show()
 
 ## Image Segmentation
-def get_seg_overlayed_image(img, seg, show_img=False):
-    class_colors = [(0,0,0), (12,76,225), (235,50,50),(13,50,235),(13,255,50) ]
+def get_seg_overlayed_image(img, seg, resize=True, show_img=False):
+    class_colors = [(0,0,0), (12,76,125), (135,50,50),(13,50,135),(13,155,50) ]
 
     if seg.ndim==2:
         newSeg = np.dstack((seg,seg,seg))
@@ -122,10 +123,17 @@ def get_seg_overlayed_image(img, seg, show_img=False):
         newSeg[:,:,0] = np.where(newSeg[:,:,0] == c, class_colors[c][0], newSeg[:,:,0])
         newSeg[:,:,1] = np.where(newSeg[:,:,1] == c, class_colors[c][1], newSeg[:,:,1])
         newSeg[:,:,2] = np.where(newSeg[:,:,2] == c, class_colors[c][2], newSeg[:,:,2])
-
+    
+    if resize:
+        img = cv2.resize(img, (seg.shape[1],seg.shape[0]), interpolation = cv2.INTER_AREA)
+    else:
+        newSeg = cv2.resize(np.asarray(newSeg, dtype=np.uint8), (img.shape[1],img.shape[0]))
+    
     dst = cv2.addWeighted(deepcopy(img), 0.7, newSeg, 0.5, 0, dtype=cv2.CV_32F)
+    
+    dst = np.asarray(dst, dtype=np.uint8)
     if show_img:
-        show_image(np.asarray(dst, dtype=np.uint8))
+        show_image(dst)
         
     return dst
 

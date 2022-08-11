@@ -187,3 +187,22 @@ def get_croped_images_from_detections(tim, det_, padding=0):
 
 def get_crop_coordinate(response):
     return (response['x_top_left'], response['y_top_left'], response['x_bottom_right'], response['y_bottom_right'])
+
+def get_annonymized_frame(tImg_anno, r):
+    for b in r:
+        t_id, t_conf, t_box = parse_detection_info(b)
+        
+        if color_dict is None:
+            obj_color = (255, 0, 255)
+        else:
+            obj_color = color_dict[t_id]
+            
+        #print(t_conf)
+        (tx1, ty1, tx2, ty2) = (t_box[0], t_box[1], t_box[2], t_box[3])
+
+        #tImg_anno = cv2.rectangle(tImg_anno, (tx1, ty1), (tx2, ty2), obj_color, line_thikness)
+        t_blur = cv2.GaussianBlur(tImg_anno[ty1:ty2, tx1:tx2 :], (9, 15), 5)
+        print(t_blur.shape)
+        tImg_anno[ty1:ty2, tx1:tx2 :] = t_blur
+
+    return tImg_anno
